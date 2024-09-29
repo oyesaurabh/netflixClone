@@ -2,6 +2,7 @@ import { useRef, useState } from "react";
 import { Header } from "../../components";
 import { BG_URL } from "../../data/const";
 import { checkEmail, checkPassword } from "../../utils/validate";
+
 const Login = () => {
   const [isSignIn, setIsSignIn] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
