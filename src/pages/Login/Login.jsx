@@ -1,8 +1,20 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Header } from "../../components";
 import { BG_URL } from "../../data/const";
+import { checkEmail, checkPassword } from "../../utils/validate";
 const Login = () => {
   const [isSignIn, setIsSignIn] = useState(true);
+  const [errorMessage, setErrorMessage] = useState("");
+  const emailRef = useRef(null);
+  const passwordRef = useRef(null);
+
+  const handleSubmit = () => {
+    const isEmailValid = checkEmail(emailRef.current.value);
+    const isPasswordValid = checkPassword(passwordRef.current.value);
+    if (!isEmailValid) setErrorMessage("Email not Valid");
+    else if (!isPasswordValid) setErrorMessage("Password not Valid");
+    else setErrorMessage("");
+  };
   return (
     <div className="min-h-screen flex flex-col bg-black">
       <Header />
@@ -19,7 +31,7 @@ const Login = () => {
             <h2 className="text-3xl font-bold text-white mb-6">
               {isSignIn ? "Sign In" : "Sign Up"}
             </h2>
-            <form className="space-y-6">
+            <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
               {!isSignIn && (
                 <input
                   type="text"
@@ -28,16 +40,22 @@ const Login = () => {
                 />
               )}
               <input
+                ref={emailRef}
                 type="email"
                 placeholder="Email or phone number"
                 className="w-full px-3 py-2 bg-gray-700 text-white placeholder-gray-400 rounded focus:outline-none focus:ring-2 focus:ring-red-600"
               />
               <input
+                ref={passwordRef}
                 type="password"
                 placeholder="Password"
                 className="w-full px-3 py-2 bg-gray-700 text-white placeholder-gray-400 rounded focus:outline-none focus:ring-2 focus:ring-red-600"
               />
-              <button className="w-full py-2 px-4 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-md transition duration-300">
+              <p className="text-red-600">{errorMessage}</p>
+              <button
+                onClick={handleSubmit}
+                className="w-full py-2 px-4 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-md transition duration-300"
+              >
                 {isSignIn ? "Sign In" : "Sign Up"}
               </button>
             </form>
@@ -45,7 +63,10 @@ const Login = () => {
               {isSignIn ? "New to Netflix? " : "Already have an account? "}
               <span
                 className="text-white hover:underline cursor-pointer"
-                onClick={() => setIsSignIn(!isSignIn)}
+                onClick={() => {
+                  setIsSignIn(!isSignIn);
+                  setErrorMessage("");
+                }}
               >
                 {isSignIn ? "Sign up now" : "Sign in"}
               </span>
