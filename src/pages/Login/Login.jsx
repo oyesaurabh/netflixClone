@@ -1,7 +1,12 @@
 import { useRef, useState } from "react";
 import { Header } from "../../components";
 import { BG_URL } from "../../data/const";
-import { checkEmail, checkPassword } from "../../utils/validate";
+import {
+  checkEmail,
+  checkPassword,
+  handleSignInUser,
+  handleSignUpUser,
+} from "../../utils";
 
 const Login = () => {
   const [isSignIn, setIsSignIn] = useState(true);
@@ -9,13 +14,24 @@ const Login = () => {
   const emailRef = useRef(null);
   const passwordRef = useRef(null);
 
-  const handleSubmit = () => {
-    const isEmailValid = checkEmail(emailRef.current.value);
-    const isPasswordValid = checkPassword(passwordRef.current.value);
+  //handle sign in and sign up action
+  const handleSubmit = async () => {
+    const email = emailRef.current.value;
+    const password = passwordRef.current.value;
+    const isEmailValid = checkEmail(email);
+    const isPasswordValid = checkPassword(password);
     if (!isEmailValid) setErrorMessage("Email not Valid");
     else if (!isPasswordValid) setErrorMessage("Password not Valid");
-    else setErrorMessage("");
+    else {
+      let response = {};
+      if (isSignIn) response = await handleSignInUser(email, password);
+      else response = await handleSignUpUser(email, password);
+      console.log(response);
+      if (!response.status) setErrorMessage(response.message);
+      else setErrorMessage("");
+    }
   };
+
   return (
     <div className="min-h-screen flex flex-col bg-black">
       <Header />
