@@ -7,12 +7,17 @@ import {
   handleSignInUser,
   handleSignUpUser,
 } from "../../utils";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { addUser } from "../../hooks/userSlice";
 
 const Login = () => {
   const [isSignIn, setIsSignIn] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
   const emailRef = useRef(null);
   const passwordRef = useRef(null);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   //handle sign in and sign up action
   const handleSubmit = async () => {
@@ -26,9 +31,13 @@ const Login = () => {
       let response = {};
       if (isSignIn) response = await handleSignInUser(email, password);
       else response = await handleSignUpUser(email, password);
-      console.log(response);
+
       if (!response.status) setErrorMessage(response.message);
-      else setErrorMessage("");
+      else {
+        const { accessToken, displayName, email } = response.user;
+        dispatch(addUser({ accessToken, displayName, email })); //saving into react-redux
+        navigate("/");
+      }
     }
   };
 
