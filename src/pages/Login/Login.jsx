@@ -1,20 +1,65 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Header } from "../../components";
 import { BG_URL } from "../../data/const";
-import { checkEmail, checkPassword } from "../../utils/validate";
+import {
+  checkEmail,
+  checkPassword,
+  handleSignInUser,
+  handleSignUpUser,
+} from "../../utils";
+import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+
 const Login = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const [isSignIn, setIsSignIn] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
   const emailRef = useRef(null);
   const passwordRef = useRef(null);
+  const userNameRef = useRef(null);
+  const userPhotoRef = useRef(null);
 
-  const handleSubmit = () => {
-    const isEmailValid = checkEmail(emailRef.current.value);
-    const isPasswordValid = checkPassword(passwordRef.current.value);
+  //checking if we are already signed in, and if so, goto /
+  const user = useSelector((store) => store.user);
+  useEffect(() => {
+    if (user) {
+      navigate("/");
+    }
+  }, []);
+
+  //handle sign in and sign up action
+  const handleSubmit = async () => {
+    const email = emailRef?.current?.value;
+    const password = passwordRef?.current?.value;
+    const userName = userNameRef?.current?.value;
+    const photoURL = userPhotoRef?.current?.value;
+
+    const isEmailValid = checkEmail(email);
+    const isPasswordValid = checkPassword(password);
+
     if (!isEmailValid) setErrorMessage("Email not Valid");
     else if (!isPasswordValid) setErrorMessage("Password not Valid");
-    else setErrorMessage("");
+    else {
+      let response = {};
+      if (isSignIn) response = await handleSignInUser({ email, password });
+      else
+        response = await handleSignUpUser({
+          email,
+          password,
+          userName,
+          photoURL,
+          dispatch,
+        });
+
+      if (!response.status) setErrorMessage(response.message);
+      else {
+        navigate("/");
+      }
+    }
   };
+
   return (
     <div className="min-h-screen flex flex-col bg-black">
       <Header />
@@ -33,11 +78,20 @@ const Login = () => {
             </h2>
             <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
               {!isSignIn && (
-                <input
-                  type="text"
-                  placeholder="Name"
-                  className="w-full px-3 py-2 bg-gray-700 text-white placeholder-gray-400 rounded focus:outline-none focus:ring-2 focus:ring-red-600"
-                />
+                <>
+                  <input
+                    ref={userNameRef}
+                    type="text"
+                    placeholder="Name"
+                    className="w-full px-3 py-2 bg-gray-700 text-white placeholder-gray-400 rounded focus:outline-none focus:ring-2 focus:ring-red-600"
+                  />
+                  <input
+                    ref={userPhotoRef}
+                    type="text"
+                    placeholder="Photo URL"
+                    className="w-full px-3 py-2 bg-gray-700 text-white placeholder-gray-400 rounded focus:outline-none focus:ring-2 focus:ring-red-600"
+                  />
+                </>
               )}
               <input
                 ref={emailRef}
