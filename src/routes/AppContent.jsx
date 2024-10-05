@@ -1,24 +1,28 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useNavigate } from "react-router-dom";
 import routeData from "./route";
-// import { useEffect } from "react";
-// import { auth } from "../config/firebase";
-// import { onAuthStateChanged } from "firebase/auth";
-// import { useDispatch } from "react-redux";
-// import { addUser, removeUser } from "../hooks/userSlice";
+import { useEffect } from "react";
+import { auth } from "../config/firebase";
+import { onAuthStateChanged } from "firebase/auth";
+import { useDispatch } from "react-redux";
+import { addUser, removeUser } from "../hooks/userSlice";
 
 export default function AppContent() {
-  // const dispatch = useDispatch();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-  // useEffect(() => {
-  //   onAuthStateChanged(auth, (user) => {
-  //     if (user) {
-  //       const { accessToken, displayName, email } = user;
-  //       dispatch(addUser({ accessToken, displayName, email })); //saving into react-redux
-  //     } else {
-  //       dispatch(removeUser());
-  //     }
-  //   });
-  // }, []);
+  useEffect(() => {
+    const subs = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        const { accessToken, displayName, photoURL, email } = user;
+        dispatch(addUser({ accessToken, displayName, photoURL, email })); //saving into react-redux
+      }
+      if (!user) {
+        dispatch(removeUser());
+        navigate("/login");
+      }
+    });
+    return () => subs();
+  }, []);
 
   return (
     <Routes>
