@@ -1,31 +1,45 @@
 import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
+  updateProfile,
 } from "firebase/auth";
 import { auth } from "../config/firebase";
+import { addUser } from "../hooks/userSlice";
 
-const handleSignUpUser = async (email, password) => {
+// Signed up
+const handleSignUpUser = async (email, password, userName, dispatch) => {
   return createUserWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
-      // Signed up
-      const user = userCredential.user;
-      return { status: true, message: "successfully Signed Up", user };
+      const { accessToken, displayName, email } = auth.currentUser;
+      updateProfile(userCredential.user, {
+        displayName: userName,
+      })
+        .then(() => {
+          dispatch(addUser({ accessToken, displayName, email })); //saving into react-redux
+        })
+        .catch((error) => {
+          dispatch(addUser({ accessToken, email })); //saving into react-redux
+          console.error("error while setting user name" + error);
+        });
+
+      return { status: true, message: "successfully Signed Up" };
     })
     .catch((error) => {
       const errorMessage = error.message;
       return { status: false, message: errorMessage };
     });
 };
-const handleSignInUser = async (email, password) => {
+// Signed in
+const handleSignInUser = async (email, password, dispatch) => {
   return signInWithEmailAndPassword(auth, email, password)
-    .then((userCredential) => {
-      // Signed in
-      const user = userCredential.user;
-      return { status: true, message: "successfully Signed In", user };
+    .then(() => {
+      const { accessToken, displayName, email } = auth.currentUser;
+      dispatch(addUser({ accessToken, displayName, email })); //saving into react-redux
+      return { status: true, message: "successfully Signed In" };
     })
     .catch((error) => {
       const errorMessage = error.message;
-      return { status: false, message: errorMessage, user: null };
+      return { status: false, message: errorMessage };
     });
 };
 

@@ -1,34 +1,31 @@
-import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-
-import { removeUser } from "../../hooks/userSlice";
+import { Header } from "../../components";
 
 const HomePage = () => {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
   const user = useSelector((store) => store.user);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    if (!user) navigate("/login");
+    if (user !== undefined) {
+      setIsLoading(false);
+      if (!user) {
+        navigate("/login");
+      }
+    }
   }, []);
 
-  const handleLogout = () => {
-    if (!user) return;
-    dispatch(removeUser());
-    navigate("/login");
-  };
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <>
-      HOME PAGE
-      <button
-        className="p-4 m-4 bg-red-500 hover:bg-red-700 text-white rounded-xl"
-        onClick={handleLogout}
-      >
-        LOGOUT
-      </button>
+      <Header />
     </>
   );
 };
+
 export default HomePage;

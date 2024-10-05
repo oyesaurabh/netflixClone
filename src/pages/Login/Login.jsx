@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Header } from "../../components";
 import { BG_URL } from "../../data/const";
 import {
@@ -8,34 +8,46 @@ import {
   handleSignUpUser,
 } from "../../utils";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { addUser } from "../../hooks/userSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 const Login = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const [isSignIn, setIsSignIn] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
   const emailRef = useRef(null);
   const passwordRef = useRef(null);
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
+  const userNameRef = useRef(null);
+
+  //checking if we are already signed in, and if so, goto /
+  const user = useSelector((store) => store.user);
+  useEffect(() => {
+    if (user) {
+      navigate("/");
+    }
+  }, []);
 
   //handle sign in and sign up action
   const handleSubmit = async () => {
     const email = emailRef.current.value;
     const password = passwordRef.current.value;
+    const userName = userNameRef?.current?.value;
+
     const isEmailValid = checkEmail(email);
     const isPasswordValid = checkPassword(password);
+
     if (!isEmailValid) setErrorMessage("Email not Valid");
     else if (!isPasswordValid) setErrorMessage("Password not Valid");
     else {
       let response = {};
-      if (isSignIn) response = await handleSignInUser(email, password);
-      else response = await handleSignUpUser(email, password);
+      if (isSignIn)
+        response = await handleSignInUser(email, password, dispatch);
+      else
+        response = await handleSignUpUser(email, password, userName, dispatch);
 
       if (!response.status) setErrorMessage(response.message);
       else {
-        const { accessToken, displayName, email } = response.user;
-        dispatch(addUser({ accessToken, displayName, email })); //saving into react-redux
         navigate("/");
       }
     }
@@ -60,6 +72,7 @@ const Login = () => {
             <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
               {!isSignIn && (
                 <input
+                  ref={userNameRef}
                   type="text"
                   placeholder="Name"
                   className="w-full px-3 py-2 bg-gray-700 text-white placeholder-gray-400 rounded focus:outline-none focus:ring-2 focus:ring-red-600"

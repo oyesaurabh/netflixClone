@@ -5,12 +5,23 @@ const userSlice = createSlice({
   initialState: null,
   reducers: {
     addUser: (state, action) => {
-      return action.payload; //initialState is null, so returning will set the return value to it
+      const newState = action.payload;
+      // Save to localStorage
+      localStorage.setItem("user", JSON.stringify(newState));
+      return newState;
     },
     removeUser: (state, action) => {
+      // Remove from localStorage
+      localStorage.removeItem("user");
       return null;
+    },
+    loadUser: (state, action) => {
+      // Load from localStorage
+      const savedUser = localStorage.getItem("user");
+      return savedUser ? JSON.parse(savedUser) : null;
     },
   },
 });
-export const { addUser, removeUser } = userSlice.actions;
+
+export const { addUser, removeUser, loadUser } = userSlice.actions;
 export default userSlice.reducer;
