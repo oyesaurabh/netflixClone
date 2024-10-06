@@ -1,20 +1,12 @@
-import { useEffect } from "react";
-import { useDispatch } from "react-redux";
-
-import { makeRequest } from "../../utils";
+// useGetNowPlaying.js
 import { addNowPlaying } from "../moviesSlice";
+import { useGetMovies } from "../../utils";
 
 const useGetNowPlaying = () => {
-  const dispatch = useDispatch();
-
-  const fetchData = async () => {
-    const res = await makeRequest(
-      "https://api.themoviedb.org/3/discover/movie?include_adult=true&page=1&sort_by=popularity.desc"
-    );
-    dispatch(addNowPlaying(res.results));
-  };
-  useEffect(() => {
-    fetchData();
-  }, []);
+  useGetMovies(
+    "https://api.themoviedb.org/3/movie/now_playing?include_adult=true&page=1",
+    addNowPlaying
+  );
 };
+
 export default useGetNowPlaying;

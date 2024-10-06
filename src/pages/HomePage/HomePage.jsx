@@ -4,11 +4,19 @@ import { useNavigate } from "react-router-dom";
 
 import { Header, Loading } from "../../components";
 import { SecondaryContainer, MainContainer } from "./components";
-import { useGetNowPlaying } from "../../hooks/custom";
+import {
+  useGetNowPlaying,
+  useGetPopular,
+  useGetTopRated,
+  useGetUpcoming,
+} from "../../hooks/custom";
 
 const HomePage = () => {
   const navigate = useNavigate();
   useGetNowPlaying();
+  useGetPopular();
+  useGetUpcoming();
+  useGetTopRated();
 
   const user = useSelector((store) => store.user);
   const [isLoading, setIsLoading] = useState(true);
