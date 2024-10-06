@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
-import { Header } from "../../components";
+import { Header, Loading } from "../../components";
+import { SecondaryContainer, MainContainer } from "./components";
 import { useGetNowPlaying } from "../../hooks/custom";
 
 const HomePage = () => {
@@ -18,13 +19,18 @@ const HomePage = () => {
   }, []);
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="h-svh">
+        <Loading />
+      </div>
+    );
   }
 
   return (
     <>
       <Header />
-      {}
+      <MainContainer />
+      <SecondaryContainer />
     </>
   );
 };
