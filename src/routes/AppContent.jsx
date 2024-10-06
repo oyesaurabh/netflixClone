@@ -21,7 +21,7 @@ export default function AppContent() {
         navigate("/login");
       }
     });
-    return () => subs();
+    return () => subs(); //onAuth is kinda event listener, so if component unmount, we need to unsubsribe it.
   }, []);
 
   return (

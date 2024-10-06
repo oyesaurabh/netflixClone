@@ -12,7 +12,7 @@ const Header = () => {
     });
   };
   return (
-    <div className="absolute top-0 left-0 p-4 sm:p-6 z-10 flex justify-between w-full">
+    <div className="absolute top-0 left-0 p-4 sm:p-6 z-10 flex justify-between w-full bg-gradient-to-b from-black">
       <img src={LOGO_URL} alt="logo" className="w-24 sm:w-32 md:w-40" />
       {user && (
         <div>
@@ -22,7 +22,7 @@ const Header = () => {
             }`}
             alt="logout"
             title={`logout ${user.displayName}?`}
-            className="w-4 sm:w-8 md:w-12 cursor-pointer hover:animate-pulse"
+            className="w-8 md:w-12 cursor-pointer hover:animate-pulse"
             onClick={handleLogout}
           />
         </div>
