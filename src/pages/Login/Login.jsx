@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Header } from "../../components";
+import { Header, Button } from "../../components";
 import { BG_URL } from "../../data/const";
 import {
   checkEmail,
@@ -15,6 +15,7 @@ const Login = () => {
   const navigate = useNavigate();
 
   const [isSignIn, setIsSignIn] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const emailRef = useRef(null);
   const passwordRef = useRef(null);
@@ -31,6 +32,8 @@ const Login = () => {
 
   //handle sign in and sign up action
   const handleSubmit = async () => {
+    setIsLoading(true);
+    setErrorMessage("");
     const email = emailRef?.current?.value;
     const password = passwordRef?.current?.value;
     const userName = userNameRef?.current?.value;
@@ -55,9 +58,11 @@ const Login = () => {
 
       if (!response.status) setErrorMessage(response.message);
       else {
+        setIsLoading(false);
         navigate("/");
       }
     }
+    setIsLoading(false);
   };
 
   return (
@@ -106,12 +111,14 @@ const Login = () => {
                 className="w-full px-3 py-2 bg-gray-700 text-white placeholder-gray-400 rounded focus:outline-none focus:ring-2 focus:ring-red-600"
               />
               <p className="text-red-600">{errorMessage}</p>
-              <button
+              <Button
+                variant="primary"
+                className="w-full"
                 onClick={handleSubmit}
-                className="w-full py-2 px-4 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-md transition duration-300"
+                isLoading={isLoading}
               >
                 {isSignIn ? "Sign In" : "Sign Up"}
-              </button>
+              </Button>
             </form>
             <div className="mt-6 text-gray-400 text-sm">
               {isSignIn ? "New to Netflix? " : "Already have an account? "}
