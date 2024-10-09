@@ -5,15 +5,19 @@ const SecondaryContainer = () => {
     (store) => store.movies
   );
   return (
-    <div className="absolute mt-[-300px] bg-black">
-      {nowPlaying.length && (
-        <MovieLists title={"Now Playing"} data={nowPlaying} />
+    <div className="bg-black md:px-2">
+      {nowPlaying.length > 0 && (
+        <div className="relative mt-[-20px] md:mt-[-50px] lg:mt-[-300px]">
+          <MovieLists title={"Now Playing"} data={nowPlaying} />
+        </div>
       )}
-      {popularMovies.length && (
-        <MovieLists title={"popular Movies"} data={popularMovies} />
+      {popularMovies.length > 0 && (
+        <MovieLists title={"Popular Movies"} data={popularMovies} />
       )}
-      {topRated.length && <MovieLists title={"top Rated"} data={topRated} />}
-      {upcoming.length && <MovieLists title={"upcoming"} data={upcoming} />}
+      {topRated.length > 0 && (
+        <MovieLists title={"Top Rated"} data={topRated} />
+      )}
+      {upcoming.length > 0 && <MovieLists title={"Upcoming"} data={upcoming} />}
     </div>
   );
 };

@@ -1,15 +1,13 @@
 import { baseUrl } from "../data/const";
 
-export default function MovieCard({ data }) {
+export default function MovieCard({ original_title, poster_path }) {
   return (
-    <div className="flex gap-2 w-40">
-      {data.map((item) => (
-        <img
-          key={item.id}
-          alt={item.original_title}
-          src={baseUrl + "/w500" + item.poster_path}
-        />
-      ))}
+    <div className="w-28 md:w-40 flex-shrink-0">
+      <img
+        alt={original_title}
+        src={baseUrl + "/w500" + poster_path}
+        className="w-full h-auto"
+      />
     </div>
   );
 }

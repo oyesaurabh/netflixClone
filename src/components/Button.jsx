@@ -3,33 +3,30 @@ import Loading from "./Loading";
 const Button = ({
   children,
   onClick,
+  href = "",
   className = "",
   variant = "primary",
-  size = "medium",
   isLoading = false,
   disabled = false,
 }) => {
   const baseStyles =
-    "px-4 py-2 rounded font-bold transition-colors duration-300 flex items-center justify-center";
+    "px-2 md:px-4 py-1 md:py-2 rounded font-bold transition-colors duration-300 flex items-center justify-center";
 
   const variantStyles = {
     primary: "bg-red-600 hover:bg-red-700 text-white",
     secondary: "bg-gray-500 hover:bg-opacity-70 text-white",
     outline:
-      "bg-transparent border-2 border-red-600 text-red-600 hover:bg-red-600 hover:text-white",
-  };
-
-  const sizeStyles = {
-    small: "text-sm px-3 py-1",
-    medium: "",
-    large: "text-lg px-6 py-3",
+      "py-23 bg-transparent border-2 border-red-600 text-red-600 hover:bg-red-600 hover:text-white",
   };
 
   const loaderStyles = "animate-spin";
-
+  const Element = href ? "a" : "button";
   return (
-    <button
-      className={`${baseStyles} ${variantStyles[variant]} ${sizeStyles[size]} ${className}`}
+    <Element
+      className={`${baseStyles} ${variantStyles[variant]} ${className}`}
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
       onClick={onClick}
       disabled={disabled}
     >
@@ -40,7 +37,7 @@ const Button = ({
       ) : (
         children
       )}
-    </button>
+    </Element>
   );
 };
 
