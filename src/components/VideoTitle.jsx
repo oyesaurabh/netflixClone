@@ -7,7 +7,6 @@ const VideoTitle = ({ title, overview }) => {
 
   useEffect(() => {
     if (titleMovie?.key) setTrailerLink(titleMovie?.key);
-    console.log(titleMovie);
   }, [titleMovie]);
 
   return (
